@@ -8,17 +8,14 @@ export default function Home() {
       <nav role="banner" aria-label="Site navigation">
         <Navbar />
       </nav>
+
       <main
         className="min-h-screen flex flex-col justify-center items-center bg-stone-100 text-stone-800 p-6"
         role="main"
         aria-label="Homepage main content"
       >
-        <header>
-          <h1
-            className="text-3xl font-bold mb-6 max-[390px]:text-center"
-            role="heading"
-            aria-level="1"
-          >
+        <header role="heading" aria-level="1" className="text-center mb-6">
+          <h1 className="text-3xl font-bold max-[390px]:text-center">
             Welcome to Your Task Manager
           </h1>
         </header>
@@ -26,26 +23,23 @@ export default function Home() {
         <section
           className="text-center max-w-full sm:max-w-md mx-auto mb-6"
           role="region"
-          aria-label="App description"
+          aria-label="App overview"
+          id="app-description"
         >
-          <p>
-            Get started by fetching sample todos from the JSONPlaceholder API to
-            stay organized and productive. The app lets you view all todos,
-            fetch a todo by ID, search by title, and filter by completion
-            status.
+          <p className="text-base text-stone-700">
+            Effortlessly manage tasks — fetch, search, filter, and add todos to stay organized.
           </p>
         </section>
 
-        <section role="region" aria-label="Call to action section">
-          <Link to="/todos">
-            <Button
-              className="bg-teal-600 hover:bg-teal-700 text-white font-bold px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
-              aria-label="Go to todos page to fetch and manage tasks"
-            >
-              Fetch Todos
-            </Button>
-          </Link>
-        </section>
+        <Link to="/todos">
+          <Button
+            className="bg-teal-600 hover:bg-teal-700 text-white font-bold px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
+            aria-label="Navigate to todos page to fetch, filter, and create tasks"
+            aria-describedby="app-description"
+          >
+            Fetch Todos
+          </Button>
+        </Link>
       </main>
     </>
   );

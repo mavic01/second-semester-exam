@@ -1,14 +1,20 @@
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
 import { fetchTodos } from "@/services/todoService"; // Api call
+import axios from "axios";
 
 export default function Todos() {
+  //Hooks
+  const dialogRef = useRef(null);
+  const [titleInput, setTitleInput] = useState("");
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
+  const [todosList, setTodosList] = useState([]);
+
   const perPage = 10;
 
   const {
@@ -22,7 +28,8 @@ export default function Todos() {
     staleTime: 1000 * 60 * 5,
   });
 
-  const filteredTodos = allTodos
+  //Filter to by Title and Completion status
+  const filteredTodos = [...todosList, ...allTodos]
     .filter((todo) => todo.title.toLowerCase().includes(search.toLowerCase()))
     .filter((todo) => {
       if (status === "completed") return todo.completed;
@@ -30,14 +37,47 @@ export default function Todos() {
       return true;
     });
 
+  //Pagination
   const totalPages = Math.ceil(filteredTodos.length / perPage);
   const startIndex = (page - 1) * perPage;
   const todos = filteredTodos.slice(startIndex, startIndex + perPage);
 
+  //Add Todo
+  const handleAddTodo = async (e) => {
+    e.preventDefault();
+
+    const newTodo = {
+      id: Date.now(),
+      title: titleInput.trim(),
+      completed: false,
+    };
+
+    try {
+      await axios.post("https://jsonplaceholder.typicode.com/todos", newTodo, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      setTodosList((prev) => [newTodo, ...prev]);
+      setTitleInput("");
+      dialogRef.current?.close();
+    } catch (error) {
+      console.error("Failed to add todo:", error);
+    }
+  };
+
   if (isLoading) {
     return (
-      <main className="max-w-xl mx-auto p-6" role="main" aria-busy="true" aria-live="polite">
-        <h1 className="text-3xl font-bold text-center text-teal-600 mb-6">Loading Todos...</h1>
+      <main
+        className="max-w-xl mx-auto p-6"
+        role="main"
+        aria-busy="true"
+        aria-live="polite"
+      >
+        <h1 className="text-3xl font-bold text-center text-teal-600 mb-6">
+          Loading Todos...
+        </h1>
         <div className="space-y-4">
           {[...Array(5)].map((_, i) => (
             <div key={i} className="space-y-2">
@@ -65,19 +105,35 @@ export default function Todos() {
       role="main"
     >
       <div className="max-w-2xl mx-auto p-6">
-        <header className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-extrabold text-teal-700">📋 Todo List</h1>
-          <Link
-            to="/"
-            className="text-sm font-medium text-teal-700 hover:underline focus:outline focus-visible:ring-2 focus-visible:ring-teal-600"
-          >
-            ← Back Home
-          </Link>
+        <header className="flex justify-between items-center mb-6 flex-wrap gap-2">
+          <h1 className="text-3xl font-extrabold text-teal-700">
+            📋 Todo List
+          </h1>
+          <div className="flex gap-2 sm:gap-4 flex-col sm:flex-row items-start sm:items-center w-full sm:w-auto">
+            <Button
+              className="bg-teal-600 text-white w-full sm:w-auto"
+              onClick={() => dialogRef.current?.showModal()}
+            >
+              + Add Todo
+            </Button>
+            <Link
+              to="/"
+              className="text-sm font-medium text-teal-700 hover:underline focus:outline focus-visible:ring-2 focus-visible:ring-teal-600 w-full sm:w-auto text-center"
+            >
+              ← Back Home
+            </Link>
+          </div>
         </header>
 
-        <section role="search" aria-label="Todo search and filter controls" className="grid gap-4 md:grid-cols-2">
+        <section
+          role="search"
+          aria-label="Todo search and filter controls"
+          className="grid gap-4 md:grid-cols-2"
+        >
           <div>
-            <label htmlFor="search-todos" className="sr-only">Search todos</label>
+            <label htmlFor="search-todos" className="sr-only">
+              Search todos
+            </label>
             <input
               id="search-todos"
               type="text"
@@ -92,7 +148,9 @@ export default function Todos() {
           </div>
 
           <div>
-            <label htmlFor="filter-status" className="sr-only">Filter by status</label>
+            <label htmlFor="filter-status" className="sr-only">
+              Filter by status
+            </label>
             <select
               id="filter-status"
               value={status}
@@ -126,7 +184,8 @@ export default function Todos() {
                       {todo.title || "Untitled"}
                     </h2>
                     <p className="text-sm text-gray-500">
-                      ID: {todo.id} • Status: {todo.completed ? "✅ Completed" : "❌ Not completed"}
+                      ID: {todo.id} • Status:{" "}
+                      {todo.completed ? "✅ Completed" : "❌ Not completed"}
                     </p>
                   </div>
 
@@ -145,7 +204,11 @@ export default function Todos() {
           )}
         </ul>
 
-        <nav className="flex justify-between items-center mt-8" role="navigation" aria-label="Pagination navigation">
+        <nav
+          className="flex justify-between items-center mt-8"
+          role="navigation"
+          aria-label="Pagination navigation"
+        >
           <Button
             className="bg-teal-700 hover:bg-teal-800 text-white focus-visible:ring-2 focus-visible:ring-teal-600"
             onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
@@ -170,13 +233,50 @@ export default function Todos() {
         </nav>
 
         {isFetching && (
-          <div className="mt-6 space-y-2 text-center" aria-live="polite" aria-busy="true">
+          <div
+            className="mt-6 space-y-2 text-center"
+            aria-live="polite"
+            aria-busy="true"
+          >
             <Skeleton className="h-4 w-1/2 mx-auto" />
             <Skeleton className="h-4 w-2/3 mx-auto" />
             <Skeleton className="h-4 w-1/3 mx-auto" />
           </div>
         )}
       </div>
+
+      <dialog
+        ref={dialogRef}
+        className="rounded-xl max-w-md w-[90%] p-6 shadow-lg"
+      >
+        <form onSubmit={handleAddTodo} method="dialog" className="space-y-4">
+          <div className="flex justify-between items-center mb-2">
+            <h2 className="text-xl font-bold text-teal-700">Add New Todo</h2>
+            <button
+              type="button"
+              onClick={() => dialogRef.current?.close()}
+              className="text-gray-500 hover:text-red-500 text-xl font-bold"
+              aria-label="Close modal"
+            >
+              &times;
+            </button>
+          </div>
+          <input
+            type="text"
+            placeholder="Enter todo title..."
+            value={titleInput}
+            onChange={(e) => setTitleInput(e.target.value)}
+            required
+            className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+          />
+          <Button
+            type="submit"
+            className="bg-teal-600 hover:bg-teal-700 text-white w-full"
+          >
+            Submit
+          </Button>
+        </form>
+      </dialog>
     </main>
   );
 }

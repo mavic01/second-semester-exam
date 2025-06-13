@@ -34,7 +34,7 @@ export default function NotFound() {
             variant="outline"
             className="bg-teal-600 hover:bg-teal-700 text-white font-bold px-4 py-2"
           >
-            Go to Homepage
+            ← Back Home
           </Button>
         </Link>
       </section>
