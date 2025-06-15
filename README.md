@@ -67,7 +67,7 @@ src/
 
 ## 📸 Preview
 
-![Todo App Preview](https://raw.githubusercontent.com/mavic01/second-semester-exam/main/public/preview.png)
+[preview.png](https://postimg.cc/N26LvXv8)
 
 ---
 
