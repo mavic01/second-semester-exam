@@ -3,10 +3,16 @@ import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchTodoById as fetchTodo } from "@/services/todoService";
 
+import { Todo } from "../types";
+
 export default function TodoDetail() {
   const { id } = useParams();
 
-  const { data: todo, isLoading, isError } = useQuery({
+  const {
+    data: todo,
+    isLoading,
+    isError,
+  } = useQuery<Todo>({
     queryKey: ["todo", id],
     queryFn: () => fetchTodo(id),
   });
@@ -19,8 +25,16 @@ export default function TodoDetail() {
         aria-label="Loading state"
         aria-busy="true"
       >
-        <div className="bg-white rounded-lg shadow-md p-6 w-full max-w-md" role="region" aria-label="Loading todo details">
-          <h1 className="text-2xl font-bold mb-4 text-teal-600" role="heading" aria-level="1">
+        <div
+          className="bg-white rounded-lg shadow-md p-6 w-full max-w-md"
+          role="region"
+          aria-label="Loading todo details"
+        >
+          <h1
+            className="text-2xl font-bold mb-4 text-teal-600"
+            role="heading"
+            aria-level={1}
+          >
             Loading Todo...
           </h1>
           <div className="space-y-4" aria-hidden="true">
@@ -41,7 +55,11 @@ export default function TodoDetail() {
         role="main"
         aria-label="Error state"
       >
-        <div className="bg-white rounded-lg shadow-md p-6 w-full max-w-md" role="region" aria-label="Error message">
+        <div
+          className="bg-white rounded-lg shadow-md p-6 w-full max-w-md"
+          role="region"
+          aria-label="Error message"
+        >
           <p className="text-red-600 text-center font-semibold" role="alert">
             ⚠️ Error fetching todo.
           </p>
@@ -65,7 +83,7 @@ export default function TodoDetail() {
           <h1
             className="text-2xl font-bold text-teal-700 mb-6 text-center"
             role="heading"
-            aria-level="1"
+            aria-level={1}
           >
             Todo Details
           </h1>
@@ -74,10 +92,10 @@ export default function TodoDetail() {
         <section role="region" aria-label="Todo information">
           <dl className="space-y-4" tabIndex={0}>
             {[
-              ["ID", todo.id],
-              ["User ID", todo.userId],
-              ["Title", todo.title],
-              ["Status", todo.completed ? "✅ Completed" : "❌ Not Completed"],
+              ["ID", todo?.id],
+              ["User ID", todo?.userId],
+              ["Title", todo?.title],
+              ["Status", todo?.completed ? "✅ Completed" : "❌ Not Completed"],
             ].map(([label, value]) => (
               <div key={label} className="flex justify-between gap-x-4">
                 <dt className="font-semibold text-gray-800">{label}:</dt>
@@ -87,7 +105,11 @@ export default function TodoDetail() {
           </dl>
         </section>
 
-        <nav className="mt-8 text-center" role="navigation" aria-label="Back to todos list">
+        <nav
+          className="mt-8 text-center"
+          role="navigation"
+          aria-label="Back to todos list"
+        >
           <Link
             to="/todos"
             className="inline-block bg-teal-700 text-white px-5 py-2 rounded-lg font-semibold hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition"

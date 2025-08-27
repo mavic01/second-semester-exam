@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 import { fetchTodos } from "@/services/todoService"; // Api call
 import axios from "axios";
 
+import { Todo } from "@/types"
+
 export default function Todos() {
   //Hooks
   const dialogRef = useRef(null);
@@ -22,7 +24,7 @@ export default function Todos() {
     isLoading,
     isError,
     isFetching,
-  } = useQuery({
+  } = useQuery<Todo[]>({
     queryKey: ["todos"],
     queryFn: fetchTodos,
     staleTime: 1000 * 60 * 5,

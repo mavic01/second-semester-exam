@@ -12,7 +12,7 @@ export default function NotFound() {
         <h1
           className="text-4xl font-extrabold text-orange-600 mb-2"
           role="heading"
-          aria-level="1"
+          aria-level={1}
         >
           404 - Page Not Found
         </h1>

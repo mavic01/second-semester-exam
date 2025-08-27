@@ -14,7 +14,7 @@ export default function Home() {
         role="main"
         aria-label="Homepage main content"
       >
-        <header role="heading" aria-level="1" className="text-center mb-6">
+        <header role="heading" aria-level={1} className="text-center mb-6">
           <h1 className="text-3xl font-bold max-[390px]:text-center">
             Welcome to Your Task Manager
           </h1>

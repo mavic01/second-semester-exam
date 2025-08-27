@@ -1,13 +1,11 @@
-import { Routes, Route } from 'react-router-dom'
+import { ReactElement } from "react"
+import { Routes, Route } from "react-router-dom"
 import Home from "./pages/Home"
 import NotFound from "./pages/NotFound"
-import Todos from './pages/Todos'
-import TodoDetail from './pages/TodoDetail'
+import Todos from "./pages/Todos"
+import TodoDetail from "./pages/TodoDetail"
 
-
-function App() {
-
-
+function App(): ReactElement {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
@@ -18,4 +16,4 @@ function App() {
   )
 }
 
-export default App;
+export default App
