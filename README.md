@@ -67,7 +67,7 @@ src/
 
 ## 📸 Preview
 
-![Todo App Preview](public/preview.png)
+[preview.png](https://postimg.cc/N26LvXv8)
 
 ---
 
